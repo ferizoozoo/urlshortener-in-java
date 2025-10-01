@@ -7,8 +7,8 @@ import java.util.UUID;
 
 public interface IUrlMappingService {
    boolean create(UrlMapping url);
-   boolean update(UrlMapping url);
+//   boolean update(UrlMapping url);
    boolean delete(UUID id);
-   UrlMapping getById(UUID id);
+   UrlMapping getByShortCode(String shortCode);
    List<UrlMapping> getAll();
 }

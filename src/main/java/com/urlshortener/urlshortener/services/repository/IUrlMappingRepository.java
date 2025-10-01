@@ -8,10 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IUrlMappingRepository {
-    public boolean exists(String url);
     public boolean add(UrlMapping urlMapping);
     public boolean update(UrlMapping urlMapping);
     public boolean delete(UUID id);
-    public UrlMapping getById(UUID id);
+    public UrlMapping getByShortCode(String shortCode);
     public List<UrlMapping> getAll();
 }

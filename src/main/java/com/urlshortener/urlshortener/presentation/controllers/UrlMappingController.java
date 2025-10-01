@@ -3,15 +3,16 @@ package com.urlshortener.urlshortener.presentation.controllers;
 import com.urlshortener.urlshortener.domain.UrlMapping;
 import com.urlshortener.urlshortener.presentation.services.IUrlMappingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/urls")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class UrlMappingController {
     private final IUrlMappingService urlMappingService;
@@ -21,9 +22,15 @@ public class UrlMappingController {
        return this.urlMappingService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public UrlMapping getById(@PathVariable String id) {
-        return this.urlMappingService.getById(UUID.fromString(id));
+    @GetMapping("/{shortCode}")
+    public RedirectView redirect(@PathVariable String shortCode) {
+        var urlMapping = this.urlMappingService.getByShortCode(shortCode);
+
+        if (urlMapping == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Short code not found");
+        }
+
+        return new RedirectView(urlMapping.getOriginalUrl());
     }
 
     @PostMapping
@@ -31,10 +38,10 @@ public class UrlMappingController {
         return this.urlMappingService.create(urlMapping);
     }
 
-    @PutMapping
-    public boolean update(@RequestBody UrlMapping urlMapping) {
-        return this.urlMappingService.update(urlMapping);
-    }
+//    @PutMapping
+//    public boolean update(@RequestBody UrlMapping urlMapping) {
+//        return this.urlMappingService.update(urlMapping);
+//    }
 
     @DeleteMapping
     public boolean delete(@RequestBody String id) {

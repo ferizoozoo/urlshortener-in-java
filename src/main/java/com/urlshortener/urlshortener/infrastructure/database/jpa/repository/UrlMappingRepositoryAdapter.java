@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 //          the application/service layer, and we've done this because of dependency inversion
 //          between layers.
 interface ISpringDataUrlMappingRepository extends CrudRepository<UrlMappingEntity, UUID> {
-
+    UrlMappingEntity findByShortCode(String shortCode);
 }
 
 @Service
@@ -27,12 +27,6 @@ interface ISpringDataUrlMappingRepository extends CrudRepository<UrlMappingEntit
 public class UrlMappingRepositoryAdapter implements IUrlMappingRepository {
     private final ISpringDataUrlMappingRepository jpaRepository;
     private final UrlMappingMapper mapper; // A mapper to convert between domain and entity
-
-    @Override
-    public boolean exists(String url) {
-//       return this.jpaRepository.existsByUrl();
-        return true;
-    }
 
     @Override
     public boolean add(UrlMapping urlMapping) {
@@ -56,8 +50,8 @@ public class UrlMappingRepositoryAdapter implements IUrlMappingRepository {
     }
 
     @Override
-    public UrlMapping getById(UUID id) {
-        var entity = this.jpaRepository.findById(id).get();
+    public UrlMapping getByShortCode(String shortCode) {
+        var entity = this.jpaRepository.findByShortCode(shortCode);
         return UrlMappingMapper.toDomain(entity);
     }
 
